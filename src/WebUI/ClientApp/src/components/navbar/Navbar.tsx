@@ -1,7 +1,6 @@
-import { useIsLoggedIn } from '../hooks';
-import { Routes as routes } from '../config';
+import { useIsLoggedIn } from '../../hooks';
+import { Routes as routes } from '../../config';
 import { generatePath, NavLink } from 'react-router-dom';
-import { ReactComponent as BulmaLogoSVG } from '../assets/image/BulmaLogo.svg';
 
 import type { FunctionComponent } from 'react';
 
@@ -16,12 +15,7 @@ const Navbar: FunctionComponent = () => {
         >
             <div className='navbar-wrapper'>
                 <div className='brand-wrapper'>
-                    <BulmaLogoSVG
-                        width='130'
-                        height='65'
-                        aria-hidden={true}
-                        title='bulma.io-logo'
-                    />
+                    <h1>ConsoleApi</h1>
                 </div>
                 <div className='navbar-routes'>
                     {isLoggedIn &&

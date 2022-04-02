@@ -1,5 +1,5 @@
 import type { FunctionComponent } from 'react';
-import { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Routes } from '../../config';
 import { toast } from 'react-toastify';
 import { useTextInput } from '../../hooks';

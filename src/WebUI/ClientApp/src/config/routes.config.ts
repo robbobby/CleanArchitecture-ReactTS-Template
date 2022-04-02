@@ -1,4 +1,4 @@
-import { Dashboard, FetchData, Form, Login } from '../containers';
+import { Dashboard, FetchData, Form, Login } from '../views';
 
 import type { ComponentType } from 'react';
 import type { Params } from 'react-router';

@@ -7,4 +7,4 @@
 
 /* Local styles */
 @import 'base/generic', 'base/transition';
-@import 'components/navbar', 'components/tool-tip';
+@import './src/components/navbar/navbar', 'components/tool-tip';
