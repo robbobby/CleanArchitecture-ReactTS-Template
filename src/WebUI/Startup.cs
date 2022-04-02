@@ -151,8 +151,8 @@ public class Startup {
             spa.Options.SourcePath = "ClientApp";
 
             if (env.IsDevelopment()) {
-                //spa.UseAngularCliServer(npmScript: "start");
                 spa.UseReactDevelopmentServer(npmScript: "start");
+                // }
             }
         });
     }
