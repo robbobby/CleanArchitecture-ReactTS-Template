@@ -1,4 +1,5 @@
-import { useRef, useState, useCallback } from 'react';
+import type { FunctionComponent } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { AuthApi } from '../api';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -6,9 +7,7 @@ import { actionCreators } from '../store/auth';
 import styled, { keyframes } from 'styled-components';
 import { useIsLoggedIn, useOnClickOutside } from '../hooks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Routes, NUGET_URL_CONFIG, LINK_ATTRIBUTES } from '../config';
-
-import type { FunctionComponent } from 'react';
+import { LINK_ATTRIBUTES, NUGET_URL_CONFIG, Routes } from '../config';
 
 const CLICK_OUTSIDE_EVENTS = ['click', 'touchend'];
 
@@ -127,7 +126,7 @@ const StyledSettings = styled.div<{ isMenuOpen: boolean }>`
   border-radius: 8px 0 0 8px;
   transition: background 0.15s ease-in;
   animation: ${FADE_IN_KEYFRAMES} 0.25s both ease;
-  background: ${({ isMenuOpen }) => `rgba(0, 0, 0, ${isMenuOpen ? 0.6 : 0.45})`};
+  background: ${({isMenuOpen}) => `rgba(0, 0, 0, ${isMenuOpen ? 0.6 : 0.45})`};
 
   :hover {
     background: rgba(0, 0, 0, 0.6);
@@ -135,87 +134,87 @@ const StyledSettings = styled.div<{ isMenuOpen: boolean }>`
 `;
 
 const Settings: FunctionComponent = () => {
-  const isLoggedIn = useIsLoggedIn();
-  const settingsLinkRef = useRef<HTMLAnchorElement | null>(null);
-  const [isMenuOpen, setisMenuOpen] = useState<boolean>(false);
+    const isLoggedIn = useIsLoggedIn();
+    const settingsLinkRef = useRef<HTMLAnchorElement | null>(null);
+    const [isMenuOpen, setisMenuOpen] = useState<boolean>(false);
 
-  // Deps list has "isMenuOpen" to limit extraneous setStates causing rerenders on every outside click
-  const onMenuClickOutside = useCallback(() => {
-    isMenuOpen && setisMenuOpen(false);
-  }, [isMenuOpen]);
+    // Deps list has "isMenuOpen" to limit extraneous setStates causing rerenders on every outside click
+    const onMenuClickOutside = useCallback(() => {
+        isMenuOpen && setisMenuOpen(false);
+    }, [isMenuOpen]);
 
-  useOnClickOutside(
-    settingsLinkRef,
-    onMenuClickOutside,
-    CLICK_OUTSIDE_EVENTS
-  );
+    useOnClickOutside(
+        settingsLinkRef,
+        onMenuClickOutside,
+        CLICK_OUTSIDE_EVENTS
+    );
 
-  // react-redux hooks state/actions
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+    // react-redux hooks state/actions
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-  if (!isLoggedIn) {
-    return null;
-  }
-
-  const {
-    path: loginPath,
-    icon: loginIcon,
-    name: loginName
-  } = Routes.find(({ path }) => path === '/')!;
-
-  const handleLogout = async () => {
-    try {
-      await AuthApi.logoutAsync();
-      dispatch(actionCreators.resetState());
-      navigate(loginPath);
-    } catch (e) {
-      console.error(e);
+    if (!isLoggedIn) {
+        return null;
     }
-  };
 
-  return (
-    <StyledSettings isMenuOpen={isMenuOpen}>
-      <SettingsLink
-        role='button'
-        ref={settingsLinkRef}
-        onClick={() => setisMenuOpen((prevIsMenuOpen) => !prevIsMenuOpen)}
-      >
-        <CogIcon icon='cog' />
-      </SettingsLink>
-      {isMenuOpen && (
-        <SettingsMenu>
-          <SettingsMenuTitle>
-            Settings
-          </SettingsMenuTitle>
-          <li>
-            <SettingsMenuLink
-              {...LINK_ATTRIBUTES}
-              href={NUGET_URL_CONFIG.HealthUi}
+    const {
+        path: loginPath,
+        icon: loginIcon,
+        name: loginName
+    } = Routes.find(({path}) => path === '/')!;
+
+    const handleLogout = async () => {
+        try {
+            await AuthApi.logoutAsync();
+            dispatch(actionCreators.resetState());
+            navigate(loginPath);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    return (
+        <StyledSettings isMenuOpen={isMenuOpen}>
+            <SettingsLink
+                role='button'
+                ref={settingsLinkRef}
+                onClick={() => setisMenuOpen((prevIsMenuOpen) => !prevIsMenuOpen)}
             >
-              <FontAwesomeIcon icon='heart' /> Health Checks
-            </SettingsMenuLink>
-          </li>
-          <li>
-            <SettingsMenuLink
-              {...LINK_ATTRIBUTES}
-              href={NUGET_URL_CONFIG.SwaggerDocs}
-            >
-              <FontAwesomeIcon icon='file' /> Swagger API
-            </SettingsMenuLink>
-          </li>
-          <li>
-            <SettingsMenuLink
-              role='button'
-              onClick={handleLogout}
-            >
-              <FontAwesomeIcon icon={loginIcon!} />{` ${loginName}`}
-            </SettingsMenuLink>
-          </li>
-        </SettingsMenu>
-      )}
-    </StyledSettings>
-  );
+                <CogIcon icon='cog'/>
+            </SettingsLink>
+            {isMenuOpen && (
+                <SettingsMenu>
+                    <SettingsMenuTitle>
+                        Settings
+                    </SettingsMenuTitle>
+                    <li>
+                        <SettingsMenuLink
+                            {...LINK_ATTRIBUTES}
+                            href={NUGET_URL_CONFIG.HealthUi}
+                        >
+                            <FontAwesomeIcon icon='heart'/> Health Checks
+                        </SettingsMenuLink>
+                    </li>
+                    <li>
+                        <SettingsMenuLink
+                            {...LINK_ATTRIBUTES}
+                            href={NUGET_URL_CONFIG.SwaggerDocs}
+                        >
+                            <FontAwesomeIcon icon='file'/> Swagger API
+                        </SettingsMenuLink>
+                    </li>
+                    <li>
+                        <SettingsMenuLink
+                            role='button'
+                            onClick={handleLogout}
+                        >
+                            <FontAwesomeIcon icon={loginIcon!}/>{` ${loginName}`}
+                        </SettingsMenuLink>
+                    </li>
+                </SettingsMenu>
+            )}
+        </StyledSettings>
+    );
 };
 
 export default Settings;

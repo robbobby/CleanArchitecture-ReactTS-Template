@@ -4,37 +4,37 @@ import { useTextInput } from '../../hooks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type UserNameInputProps = Readonly<{
-  isInputInvalid: boolean;
-  textInput: ReturnType<typeof useTextInput>;
+    isInputInvalid: boolean;
+    textInput: ReturnType<typeof useTextInput>;
 }>;
 
 const UserNameInput = memo<UserNameInputProps>(({
-  textInput,
-  isInputInvalid
-}) => {
-  const { hasValue, bindToInput } = textInput;
+                                                    textInput,
+                                                    isInputInvalid
+                                                }) => {
+    const {hasValue, bindToInput} = textInput;
 
-  const className = classNames([
-    'input',
-    'is-medium',
-    (isInputInvalid && !hasValue) && 'is-danger'
-  ]);
+    const className = classNames([
+        'input',
+        'is-medium',
+        (isInputInvalid && !hasValue) && 'is-danger'
+    ]);
 
-  return (
-    <div className='field'>
-      <div className='control has-icons-left'>
-        <input
-          autoFocus
-          {...bindToInput}
-          className={className}
-          placeholder='Username'
-        />
-        <span className='icon is-left'>
-          <FontAwesomeIcon icon='user' />
+    return (
+        <div className='field'>
+            <div className='control has-icons-left'>
+                <input
+                    autoFocus
+                    {...bindToInput}
+                    className={className}
+                    placeholder='Username'
+                />
+                <span className='icon is-left'>
+          <FontAwesomeIcon icon='user'/>
         </span>
-      </div>
-    </div>
-  );
+            </div>
+        </div>
+    );
 });
 
 UserNameInput.displayName = 'UserNameInput';

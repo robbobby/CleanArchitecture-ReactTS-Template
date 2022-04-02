@@ -102,8 +102,8 @@ public class Startup {
 
         app.UseExceptionHandler(builder => {
             builder.Run(async context => {
-                var error = context.Features.Get<IExceptionHandlerFeature>();
-                var exDetails = new ExceptionDetails((int)HttpStatusCode.InternalServerError, error?.Error.Message ?? "");
+                IExceptionHandlerFeature? error = context.Features.Get<IExceptionHandlerFeature>();
+                ExceptionDetails exDetails = new ExceptionDetails((int)HttpStatusCode.InternalServerError, error?.Error.Message ?? "");
 
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = exDetails.StatusCode;
@@ -117,16 +117,15 @@ public class Startup {
 
         app.UseHealthChecksUI();
 
-        app.UseHealthChecks("/healthchecks-json", new HealthCheckOptions() {
+        app.UseHealthChecks("/healthchecks-json", new HealthCheckOptions {
             Predicate = _ => true,
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
         });
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();
-        if (!env.IsDevelopment()) {
+        if (!env.IsDevelopment())
             app.UseSpaStaticFiles();
-        }
 
         app.UseOpenApi();
         app.UseSwaggerUi3(settings => {
@@ -150,10 +149,8 @@ public class Startup {
 
             spa.Options.SourcePath = "ClientApp";
 
-            if (env.IsDevelopment()) {
-                spa.UseReactDevelopmentServer(npmScript: "start");
-                // }
-            }
+            if (env.IsDevelopment()) spa.UseReactDevelopmentServer("start");
+            // }
         });
     }
 }

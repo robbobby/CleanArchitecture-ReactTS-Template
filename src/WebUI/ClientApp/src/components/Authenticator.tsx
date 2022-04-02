@@ -1,12 +1,12 @@
-import { useEffect, memo } from 'react';
+import { memo, useEffect } from 'react';
 import { AuthStatusEnum } from '../store/auth';
 import styled, { keyframes } from 'styled-components';
 
 type AuthenticatorProps = Readonly<{
-  delay?: number;
-  authStatus: AuthStatusEnum;
-  handleOnFail: (...args: any[]) => any;
-  handleOnSuccess: (...args: any[]) => any;
+    delay?: number;
+    authStatus: AuthStatusEnum;
+    handleOnFail: (...args: any[]) => any;
+    handleOnSuccess: (...args: any[]) => any;
 }>;
 
 const CHILD_DIV_COUNT = 9;
@@ -18,15 +18,18 @@ const ROTATE_KEYFRAMES = keyframes`
 `;
 
 const getChildDivBorderColor = (authStatus: AuthStatusEnum): string => {
-  switch (authStatus) {
-    case AuthStatusEnum.FAIL: return '#e93e60';
-    case AuthStatusEnum.SUCCESS: return '#09d3ac';
-    default: return 'rgba(9, 30, 66, 0.35)';
-  }
+    switch (authStatus) {
+        case AuthStatusEnum.FAIL:
+            return '#e93e60';
+        case AuthStatusEnum.SUCCESS:
+            return '#09d3ac';
+        default:
+            return 'rgba(9, 30, 66, 0.35)';
+    }
 };
 
 const getChildDivCSS = (): string => {
-  const childDivTemplate = (idx: number): string => `
+    const childDivTemplate = (idx: number): string => `
     &:nth-child(${idx + 1}) {
       height: calc(96px / 9 + ${idx} * 96px / 9);
       width: calc(96px / 9 + ${idx} * 96px / 9);
@@ -34,9 +37,9 @@ const getChildDivCSS = (): string => {
     }
   `;
 
-  return [...Array(CHILD_DIV_COUNT).keys()]
-    .map((key) => childDivTemplate(key))
-    .join('');
+    return [...Array(CHILD_DIV_COUNT).keys()]
+        .map((key) => childDivTemplate(key))
+        .join('');
 };
 
 const AuthenticatorWrapper = styled.div<Pick<AuthenticatorProps, 'authStatus'>>`
@@ -58,7 +61,7 @@ const AuthenticatorWrapper = styled.div<Pick<AuthenticatorProps, 'authStatus'>>`
     border-radius: 50%;
     box-sizing: border-box;
     border: 2px solid transparent;
-    border-top-color: ${({ authStatus }) => getChildDivBorderColor(authStatus)};
+    border-top-color: ${({authStatus}) => getChildDivBorderColor(authStatus)};
     animation: ${ROTATE_KEYFRAMES} 1500ms cubic-bezier(0.68, -0.75, 0.265, 1.75) infinite forwards;
 
     ${getChildDivCSS()}
@@ -66,42 +69,45 @@ const AuthenticatorWrapper = styled.div<Pick<AuthenticatorProps, 'authStatus'>>`
 `;
 
 const Authenticator = memo<AuthenticatorProps>(({
-  authStatus,
-  handleOnFail,
-  handleOnSuccess,
-  delay = 1500
-}) => {
-  useEffect(() => {
-    const authHandler = setTimeout(() => {
-      switch (authStatus) {
-        case AuthStatusEnum.FAIL: return handleOnFail();
-        case AuthStatusEnum.SUCCESS: return handleOnSuccess();
-        default: return;
-      }
-    }, delay);
+                                                    authStatus,
+                                                    handleOnFail,
+                                                    handleOnSuccess,
+                                                    delay = 1500
+                                                }) => {
+    useEffect(() => {
+        const authHandler = setTimeout(() => {
+            switch (authStatus) {
+                case AuthStatusEnum.FAIL:
+                    return handleOnFail();
+                case AuthStatusEnum.SUCCESS:
+                    return handleOnSuccess();
+                default:
+                    return;
+            }
+        }, delay);
 
-    return () => {
-      clearTimeout(authHandler);
+        return () => {
+            clearTimeout(authHandler);
+        }
+    }, [authStatus, delay, handleOnFail, handleOnSuccess]);
+
+    if (!authStatus || authStatus === AuthStatusEnum.NONE) {
+        return null;
     }
-  }, [authStatus, delay, handleOnFail, handleOnSuccess]);
 
-  if (!authStatus || authStatus === AuthStatusEnum.NONE) {
-    return null;
-  }
-
-  return (
-    <AuthenticatorWrapper authStatus={authStatus}>
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-      <div />
-    </AuthenticatorWrapper>
-  );
+    return (
+        <AuthenticatorWrapper authStatus={authStatus}>
+            <div/>
+            <div/>
+            <div/>
+            <div/>
+            <div/>
+            <div/>
+            <div/>
+            <div/>
+            <div/>
+        </AuthenticatorWrapper>
+    );
 });
 
 Authenticator.displayName = 'Authenticator';

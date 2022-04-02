@@ -2,7 +2,7 @@ import { memo } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 type SpinnerProps = Readonly<{
-  isLoading: boolean;
+    isLoading: boolean;
 }>;
 
 const SPIN_KEYFRAMES = keyframes`
@@ -20,7 +20,7 @@ const StyledSpinner = styled.div<SpinnerProps>`
   width: 4.75em;
   height: 4.75em;
   position: absolute;
-  display: ${({ isLoading }) => isLoading ? 'inline-block' : 'none'};
+  display: ${({isLoading}) => isLoading ? 'inline-block' : 'none'};
 
   > div {
     width: 4.75em;
@@ -47,13 +47,13 @@ const StyledSpinner = styled.div<SpinnerProps>`
   }
 `;
 
-const Spinner = memo<SpinnerProps>(({ isLoading }) => (
-  <StyledSpinner isLoading={isLoading}>
-    <div />
-    <div />
-    <div />
-    <div />
-  </StyledSpinner>
+const Spinner = memo<SpinnerProps>(({isLoading}) => (
+    <StyledSpinner isLoading={isLoading}>
+        <div/>
+        <div/>
+        <div/>
+        <div/>
+    </StyledSpinner>
 ));
 
 Spinner.displayName = 'Spinner';

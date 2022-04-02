@@ -16,15 +16,15 @@ const initialState: RootState = (window as any)?.initialReduxState;
 const store = configureStore(initialState);
 
 render(
-  <StrictMode>
-    <BrowserRouter>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </BrowserRouter>
-    <ToastContainer {...toastifyProps} />
-  </StrictMode>,
-  document.getElementById('root')
+    <StrictMode>
+        <BrowserRouter>
+            <Provider store={store}>
+                <App/>
+            </Provider>
+        </BrowserRouter>
+        <ToastContainer {...toastifyProps} />
+    </StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change

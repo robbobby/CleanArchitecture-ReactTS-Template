@@ -1,9 +1,7 @@
-﻿namespace Console.WebUI.Models
-{
-    public interface ICredentials
-    {
-        string? userName   { get; set; }
-        string? password   { get; set; }
-        bool    rememberMe { get; set; }
-    }
+﻿namespace Console.WebUI.Models; 
+
+public interface ICredentials {
+    string? userName { get; set; }
+    string? password { get; set; }
+    bool rememberMe { get; set; }
 }

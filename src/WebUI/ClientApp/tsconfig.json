@@ -19,7 +19,7 @@
       "dom",
       "dom.iterable",
       "esnext"
-    ],
+    ]
     // "allowJs": true
   },
   "include": [

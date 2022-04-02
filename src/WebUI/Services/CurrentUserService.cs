@@ -1,15 +1,12 @@
 ﻿using System.Security.Claims;
-
 using Console.Application.Common.Interfaces;
 
 namespace Console.WebUI.Services;
 
-public class CurrentUserService : ICurrentUserService
-{
+public class CurrentUserService : ICurrentUserService {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public CurrentUserService(IHttpContextAccessor httpContextAccessor)
-    {
+    public CurrentUserService(IHttpContextAccessor httpContextAccessor) {
         _httpContextAccessor = httpContextAccessor;
     }
 

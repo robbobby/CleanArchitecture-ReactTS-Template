@@ -2,13 +2,13 @@ import { memo } from 'react';
 import styled from 'styled-components';
 
 type CheckboxProps = Readonly<{
-  id?: string;
-  name?: string;
-  label?: string;
-  checked: boolean;
-  disabled?: boolean;
-  readOnly?: boolean;
-  onCheck: (checked: boolean) => void;
+    id?: string;
+    name?: string;
+    label?: string;
+    checked: boolean;
+    disabled?: boolean;
+    readOnly?: boolean;
+    onCheck: (checked: boolean) => void;
 }>;
 
 const Label = styled.span`
@@ -91,27 +91,27 @@ const CheckIcon = styled.i`
 `;
 
 const Checkbox = memo<CheckboxProps>(({
-  id,
-  name,
-  label,
-  onCheck,
-  checked,
-  disabled,
-  readOnly
-}) => (
-  <CheckboxWrapper>
-    <Input
-      id={id}
-      name={name}
-      type='checkbox'
-      checked={checked}
-      readOnly={readOnly}
-      disabled={disabled}
-      onChange={(e) => onCheck(e.target.checked)}
-    />
-    <CheckIcon />
-    {label && <Label>{label}</Label>}
-  </CheckboxWrapper>
+                                          id,
+                                          name,
+                                          label,
+                                          onCheck,
+                                          checked,
+                                          disabled,
+                                          readOnly
+                                      }) => (
+    <CheckboxWrapper>
+        <Input
+            id={id}
+            name={name}
+            type='checkbox'
+            checked={checked}
+            readOnly={readOnly}
+            disabled={disabled}
+            onChange={(e) => onCheck(e.target.checked)}
+        />
+        <CheckIcon/>
+        {label && <Label>{label}</Label>}
+    </CheckboxWrapper>
 ));
 
 Checkbox.displayName = 'Checkbox';
