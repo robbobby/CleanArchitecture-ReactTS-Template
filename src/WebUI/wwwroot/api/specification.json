@@ -3,7 +3,8 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Console API",
-    "version": "1.0.0"
+    "description": "Detailed Description of API",
+    "version": "v1"
   },
   "paths": {
     "/api/Auth/Login": {

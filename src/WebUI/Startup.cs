@@ -1,11 +1,19 @@
+using System.Net;
 using Console.Application;
 using Console.Application.Common.Interfaces;
 using Console.Infrastructure;
 using Console.Infrastructure.Persistence;
+using Console.WebUI.Extensions;
 using Console.WebUI.Filters;
+using Console.WebUI.Hubs;
+using Console.WebUI.Models;
 using Console.WebUI.Services;
 using FluentValidation.AspNetCore;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 
@@ -18,9 +26,27 @@ public class Startup {
 
     public IConfiguration Configuration { get; }
 
+
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services) {
         services.AddApplication();
+
+        var spaSrcPath = "ClientApp";
+        var corsPolicyName = "AllowAll";
+
+        services.AddHealthChecks()
+            .AddGcInfoCheck("GCInfo");
+
+        // services.AddHealthChecks()
+        // .AddInMemoryStorage();
+
+
+        services.AddCorsConfig(corsPolicyName);
+        services.AddControllers();
+        services.AddSignalR();
+        services.AddMvc(opt => opt.SuppressAsyncSuffixInActionNames = false);
+
+
         services.AddInfrastructure(Configuration);
 
         services.AddDatabaseDeveloperPageExceptionFilter();
@@ -44,10 +70,12 @@ public class Startup {
 
         // In production, the Angular files will be served from this directory
         services.AddSpaStaticFiles(configuration =>
-            configuration.RootPath = "ClientApp/dist");
+            configuration.RootPath = $"{spaSrcPath}/dist");
 
         services.AddOpenApiDocument(configure => {
+            configure.Version = "v1";
             configure.Title = "Console API";
+            configure.Description = "Detailed Description of API";
             configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme {
                 Type = OpenApiSecuritySchemeType.ApiKey,
                 Name = "Authorization",
@@ -66,17 +94,41 @@ public class Startup {
             app.UseMigrationsEndPoint();
         } else {
             app.UseExceptionHandler("/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
+            // app.UseResponseCompression();
         }
 
-        app.UseHealthChecks("/health");
+        app.UseCors("AllowAll");
+
+        app.UseExceptionHandler(builder => {
+            builder.Run(async context => {
+                var error = context.Features.Get<IExceptionHandlerFeature>();
+                var exDetails = new ExceptionDetails((int)HttpStatusCode.InternalServerError, error?.Error.Message ?? "");
+
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = exDetails.StatusCode;
+                context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                context.Response.Headers.Add("Application-Error", exDetails.Message);
+                context.Response.Headers.Add("Access-Control-Expose-Headers", "Application-Error");
+
+                await context.Response.WriteAsync(exDetails.ToString());
+            });
+        });
+
+        app.UseHealthChecksUI();
+
+        app.UseHealthChecks("/healthchecks-json", new HealthCheckOptions() {
+            Predicate = _ => true,
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
+
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         if (!env.IsDevelopment()) {
             app.UseSpaStaticFiles();
         }
 
+        app.UseOpenApi();
         app.UseSwaggerUi3(settings => {
             settings.Path = "/api";
             settings.DocumentPath = "/api/specification.json";
@@ -88,10 +140,8 @@ public class Startup {
         app.UseIdentityServer();
         app.UseAuthorization();
         app.UseEndpoints(endpoints => {
-            endpoints.MapControllerRoute(
-                name: "default",
-                pattern: "{controller}/{action=Index}/{id?}");
-            endpoints.MapRazorPages();
+            endpoints.MapControllers();
+            endpoints.MapHub<UsersHub>("/hubs/users");
         });
 
         app.UseSpa(spa => {
@@ -102,7 +152,7 @@ public class Startup {
 
             if (env.IsDevelopment()) {
                 //spa.UseAngularCliServer(npmScript: "start");
-                spa.UseProxyToSpaDevelopmentServer(Configuration["SpaBaseUrl"] ?? "http://localhost:4200");
+                spa.UseReactDevelopmentServer(npmScript: "start");
             }
         });
     }
