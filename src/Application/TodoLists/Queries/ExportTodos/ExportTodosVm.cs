@@ -1,9 +1,7 @@
 ﻿namespace Console.Application.TodoLists.Queries.ExportTodos;
 
-public class ExportTodosVm
-{
-    public ExportTodosVm(string fileName, string contentType, byte[] content)
-    {
+public class ExportTodosVm {
+    public ExportTodosVm(string fileName, string contentType, byte[] content) {
         FileName = fileName;
         ContentType = contentType;
         Content = content;

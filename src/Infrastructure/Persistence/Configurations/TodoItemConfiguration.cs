@@ -4,10 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Console.Infrastructure.Persistence.Configurations;
 
-public class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
-{
-    public void Configure(EntityTypeBuilder<TodoItem> builder)
-    {
+public class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem> {
+    public void Configure(EntityTypeBuilder<TodoItem> builder) {
         builder.Ignore(e => e.DomainEvents);
 
         builder.Property(t => t.Title)

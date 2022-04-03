@@ -4,8 +4,7 @@ using Console.Domain.Entities;
 
 namespace Console.Application.TodoLists.Queries.GetTodos;
 
-public class TodoItemDto : IMapFrom<TodoItem>
-{
+public class TodoItemDto : IMapFrom<TodoItem> {
     public int Id { get; set; }
 
     public int ListId { get; set; }
@@ -18,8 +17,7 @@ public class TodoItemDto : IMapFrom<TodoItem>
 
     public string? Note { get; set; }
 
-    public void Mapping(Profile profile)
-    {
+    public void Mapping(Profile profile) {
         profile.CreateMap<TodoItem, TodoItemDto>()
             .ForMember(d => d.Priority, opt => opt.MapFrom(s => (int)s.Priority));
     }

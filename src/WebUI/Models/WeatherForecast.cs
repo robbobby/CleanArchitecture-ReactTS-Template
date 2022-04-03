@@ -1,4 +1,4 @@
-﻿namespace Console.WebUI.Models; 
+﻿namespace Console.WebUI.Models;
 
 public class WeatherForecast : IWeatherForecast {
     public int TemperatureC { get; set; }

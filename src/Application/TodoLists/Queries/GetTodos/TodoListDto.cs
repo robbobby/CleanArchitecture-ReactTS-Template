@@ -3,10 +3,8 @@ using Console.Domain.Entities;
 
 namespace Console.Application.TodoLists.Queries.GetTodos;
 
-public class TodoListDto : IMapFrom<TodoList>
-{
-    public TodoListDto()
-    {
+public class TodoListDto : IMapFrom<TodoList> {
+    public TodoListDto() {
         Items = new List<TodoItemDto>();
     }
 

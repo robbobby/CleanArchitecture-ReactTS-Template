@@ -2,7 +2,6 @@
 
 namespace Console.Application.Common.Interfaces;
 
-public interface IDomainEventService
-{
+public interface IDomainEventService {
     Task Publish(DomainEvent domainEvent);
 }

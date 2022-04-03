@@ -5,19 +5,15 @@ using ValidationException = Console.Application.Common.Exceptions.ValidationExce
 namespace Console.Application.Common.Behaviours;
 
 public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-     where TRequest : notnull
-{
+    where TRequest : notnull {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
-    {
+    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators) {
         _validators = validators;
     }
 
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
-    {
-        if (_validators.Any())
-        {
+    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next) {
+        if (_validators.Any()) {
             var context = new ValidationContext<TRequest>(request);
 
             var validationResults = await Task.WhenAll(

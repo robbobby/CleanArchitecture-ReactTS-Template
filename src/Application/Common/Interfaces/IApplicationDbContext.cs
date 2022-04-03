@@ -3,8 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Console.Application.Common.Interfaces;
 
-public interface IApplicationDbContext
-{
+public interface IApplicationDbContext {
     DbSet<TodoList> TodoLists { get; }
 
     DbSet<TodoItem> TodoItems { get; }

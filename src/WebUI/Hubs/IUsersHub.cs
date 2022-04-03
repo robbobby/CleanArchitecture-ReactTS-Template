@@ -1,4 +1,4 @@
-﻿namespace Console.WebUI.Hubs; 
+﻿namespace Console.WebUI.Hubs;
 
 public interface IUsersHub {
     Task UserLogin();

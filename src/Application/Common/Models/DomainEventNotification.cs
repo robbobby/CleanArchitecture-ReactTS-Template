@@ -3,10 +3,8 @@ using MediatR;
 
 namespace Console.Application.Common.Models;
 
-public class DomainEventNotification<TDomainEvent> : INotification where TDomainEvent : DomainEvent
-{
-    public DomainEventNotification(TDomainEvent domainEvent)
-    {
+public class DomainEventNotification<TDomainEvent> : INotification where TDomainEvent : DomainEvent {
+    public DomainEventNotification(TDomainEvent domainEvent) {
         DomainEvent = domainEvent;
     }
 

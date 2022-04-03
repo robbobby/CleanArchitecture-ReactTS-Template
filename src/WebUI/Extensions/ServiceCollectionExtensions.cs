@@ -1,7 +1,7 @@
 ﻿using System.IO.Compression;
 using Microsoft.AspNetCore.ResponseCompression;
 
-namespace Console.WebUI.Extensions; 
+namespace Console.WebUI.Extensions;
 
 public static class ServiceCollectionExtensions {
     public static IServiceCollection AddCorsConfig(this IServiceCollection services, string name) {

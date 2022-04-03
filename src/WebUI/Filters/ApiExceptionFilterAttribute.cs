@@ -47,7 +47,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute {
     private void HandleValidationException(ExceptionContext context) {
         ValidationException exception = (ValidationException)context.Exception;
 
-        ValidationProblemDetails details = new ValidationProblemDetails(exception.Errors) {
+        ValidationProblemDetails details = new(exception.Errors) {
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
         };
 
@@ -57,7 +57,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute {
     }
 
     private void HandleInvalidModelStateException(ExceptionContext context) {
-        ValidationProblemDetails details = new ValidationProblemDetails(context.ModelState) {
+        ValidationProblemDetails details = new(context.ModelState) {
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
         };
 
@@ -69,7 +69,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute {
     private void HandleNotFoundException(ExceptionContext context) {
         NotFoundException exception = (NotFoundException)context.Exception;
 
-        ProblemDetails details = new ProblemDetails {
+        ProblemDetails details = new() {
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
             Title = "The specified resource was not found.",
             Detail = exception.Message
@@ -81,7 +81,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute {
     }
 
     private void HandleUnauthorizedAccessException(ExceptionContext context) {
-        ProblemDetails details = new ProblemDetails {
+        ProblemDetails details = new() {
             Status = StatusCodes.Status401Unauthorized,
             Title = "Unauthorized",
             Type = "https://tools.ietf.org/html/rfc7235#section-3.1"
@@ -95,7 +95,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute {
     }
 
     private void HandleForbiddenAccessException(ExceptionContext context) {
-        ProblemDetails details = new ProblemDetails {
+        ProblemDetails details = new() {
             Status = StatusCodes.Status403Forbidden,
             Title = "Forbidden",
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.3"
@@ -109,7 +109,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute {
     }
 
     private void HandleUnknownException(ExceptionContext context) {
-        ProblemDetails details = new ProblemDetails {
+        ProblemDetails details = new() {
             Status = StatusCodes.Status500InternalServerError,
             Title = "An error occurred while processing your request.",
             Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1"

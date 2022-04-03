@@ -1,9 +1,7 @@
 ﻿namespace Console.Application.Common.Models;
 
-public class Result
-{
-    internal Result(bool succeeded, IEnumerable<string> errors)
-    {
+public class Result {
+    internal Result(bool succeeded, IEnumerable<string> errors) {
         Succeeded = succeeded;
         Errors = errors.ToArray();
     }
@@ -12,13 +10,11 @@ public class Result
 
     public string[] Errors { get; set; }
 
-    public static Result Success()
-    {
+    public static Result Success() {
         return new Result(true, Array.Empty<string>());
     }
 
-    public static Result Failure(IEnumerable<string> errors)
-    {
+    public static Result Failure(IEnumerable<string> errors) {
         return new Result(false, errors);
     }
 }

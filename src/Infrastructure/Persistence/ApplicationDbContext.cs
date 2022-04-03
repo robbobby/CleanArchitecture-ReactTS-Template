@@ -10,8 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace Console.Infrastructure.Persistence;
 
-public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, IApplicationDbContext
-{
+public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, IApplicationDbContext {
     private readonly ICurrentUserService _currentUserService;
     private readonly IDateTime _dateTime;
     private readonly IDomainEventService _domainEventService;
@@ -21,8 +20,7 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
         IOptions<OperationalStoreOptions> operationalStoreOptions,
         ICurrentUserService currentUserService,
         IDomainEventService domainEventService,
-        IDateTime dateTime) : base(options, operationalStoreOptions)
-    {
+        IDateTime dateTime) : base(options, operationalStoreOptions) {
         _currentUserService = currentUserService;
         _domainEventService = domainEventService;
         _dateTime = dateTime;
@@ -32,12 +30,9 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
 
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
 
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
-    {
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new()) {
         foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
-        {
-            switch (entry.State)
-            {
+            switch (entry.State) {
                 case EntityState.Added:
                     entry.Entity.CreatedBy = _currentUserService.UserId;
                     entry.Entity.Created = _dateTime.Now;
@@ -48,13 +43,12 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
                     entry.Entity.LastModified = _dateTime.Now;
                     break;
             }
-        }
 
         var events = ChangeTracker.Entries<IHasDomainEvent>()
-                .Select(x => x.Entity.DomainEvents)
-                .SelectMany(x => x)
-                .Where(domainEvent => !domainEvent.IsPublished)
-                .ToArray();
+            .Select(x => x.Entity.DomainEvents)
+            .SelectMany(x => x)
+            .Where(domainEvent => !domainEvent.IsPublished)
+            .ToArray();
 
         var result = await base.SaveChangesAsync(cancellationToken);
 
@@ -63,17 +57,14 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
         return result;
     }
 
-    protected override void OnModelCreating(ModelBuilder builder)
-    {
+    protected override void OnModelCreating(ModelBuilder builder) {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(builder);
     }
 
-    private async Task DispatchEvents(DomainEvent[] events)
-    {
-        foreach (var @event in events)
-        {
+    private async Task DispatchEvents(DomainEvent[] events) {
+        foreach (DomainEvent @event in events) {
             @event.IsPublished = true;
             await _domainEventService.Publish(@event);
         }

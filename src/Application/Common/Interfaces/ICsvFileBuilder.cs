@@ -2,7 +2,6 @@
 
 namespace Console.Application.Common.Interfaces;
 
-public interface ICsvFileBuilder
-{
+public interface ICsvFileBuilder {
     byte[] BuildTodoItemsFile(IEnumerable<TodoItemRecord> records);
 }

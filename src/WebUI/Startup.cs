@@ -103,7 +103,7 @@ public class Startup {
         app.UseExceptionHandler(builder => {
             builder.Run(async context => {
                 IExceptionHandlerFeature? error = context.Features.Get<IExceptionHandlerFeature>();
-                ExceptionDetails exDetails = new ExceptionDetails((int)HttpStatusCode.InternalServerError, error?.Error.Message ?? "");
+                ExceptionDetails exDetails = new((int)HttpStatusCode.InternalServerError, error?.Error.Message ?? "");
 
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = exDetails.StatusCode;

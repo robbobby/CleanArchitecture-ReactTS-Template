@@ -1,7 +1,7 @@
 ﻿using Console.WebUI.HealthChecks.GCInfo;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace Console.WebUI.Extensions; 
+namespace Console.WebUI.Extensions;
 
 public static class HealthChecksBuilderExtensions {
     public static IHealthChecksBuilder AddGcInfoCheck(

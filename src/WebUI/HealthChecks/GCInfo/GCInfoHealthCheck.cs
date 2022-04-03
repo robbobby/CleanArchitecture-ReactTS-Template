@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
-namespace Console.WebUI.HealthChecks.GCInfo; 
+namespace Console.WebUI.HealthChecks.GCInfo;
 
 public class GCInfoHealthCheck : IHealthCheck {
     private readonly IOptionsMonitor<IGCInfoOptions> _options;

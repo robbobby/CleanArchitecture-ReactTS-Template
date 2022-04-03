@@ -4,12 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Console.Application.TodoLists.Commands.CreateTodoList;
 
-public class CreateTodoListCommandValidator : AbstractValidator<CreateTodoListCommand>
-{
+public class CreateTodoListCommandValidator : AbstractValidator<CreateTodoListCommand> {
     private readonly IApplicationDbContext _context;
 
-    public CreateTodoListCommandValidator(IApplicationDbContext context)
-    {
+    public CreateTodoListCommandValidator(IApplicationDbContext context) {
         _context = context;
 
         RuleFor(v => v.Title)
@@ -18,8 +16,7 @@ public class CreateTodoListCommandValidator : AbstractValidator<CreateTodoListCo
             .MustAsync(BeUniqueTitle).WithMessage("The specified title already exists.");
     }
 
-    public async Task<bool> BeUniqueTitle(string title, CancellationToken cancellationToken)
-    {
+    public async Task<bool> BeUniqueTitle(string title, CancellationToken cancellationToken) {
         return await _context.TodoLists
             .AllAsync(l => l.Title != title, cancellationToken);
     }

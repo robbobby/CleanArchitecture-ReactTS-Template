@@ -3,8 +3,7 @@ using Console.Domain.Entities;
 
 namespace Console.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 
-public class TodoItemBriefDto : IMapFrom<TodoItem>
-{
+public class TodoItemBriefDto : IMapFrom<TodoItem> {
     public int Id { get; set; }
 
     public int ListId { get; set; }

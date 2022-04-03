@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace Console.WebUI.Hubs; 
+namespace Console.WebUI.Hubs;
 
 public class UsersHub : Hub<IUsersHub> {
     public async Task UserLogin() {

@@ -1,9 +1,7 @@
 ﻿namespace Console.Domain.Events;
 
-public class TodoItemCompletedEvent : DomainEvent
-{
-    public TodoItemCompletedEvent(TodoItem item)
-    {
+public class TodoItemCompletedEvent : DomainEvent {
+    public TodoItemCompletedEvent(TodoItem item) {
         Item = item;
     }
 

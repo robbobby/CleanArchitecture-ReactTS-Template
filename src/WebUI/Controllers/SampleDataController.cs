@@ -2,7 +2,7 @@
 using Console.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Console.WebUI.Controllers; 
+namespace Console.WebUI.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
@@ -11,7 +11,7 @@ public class SampleDataController : ControllerBase {
 
     [HttpGet]
     public IEnumerable<WeatherForecast> WeatherForecasts(int startDateIndex) {
-        Random rng = new Random();
+        Random rng = new();
 
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast {
                 TemperatureC = rng.Next(-20, 55),

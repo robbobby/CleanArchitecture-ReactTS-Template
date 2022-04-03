@@ -1,7 +1,6 @@
 ﻿namespace Console.Domain.Enums;
 
-public enum PriorityLevel
-{
+public enum PriorityLevel {
     None = 0,
     Low = 1,
     Medium = 2,

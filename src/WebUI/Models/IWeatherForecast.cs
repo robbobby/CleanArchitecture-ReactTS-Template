@@ -1,4 +1,4 @@
-﻿namespace Console.WebUI.Models; 
+﻿namespace Console.WebUI.Models;
 
 public interface IWeatherForecast {
     int Id { get; }

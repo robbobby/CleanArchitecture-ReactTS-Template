@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Console.WebUI.Models; 
+namespace Console.WebUI.Models;
 
 public class ExceptionDetails {
     public readonly string Message;

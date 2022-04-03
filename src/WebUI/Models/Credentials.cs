@@ -1,4 +1,4 @@
-﻿namespace Console.WebUI.Models; 
+﻿namespace Console.WebUI.Models;
 
 public class Credentials : ICredentials {
     public string? userName { get; set; }

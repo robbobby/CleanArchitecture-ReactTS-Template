@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
     "baseUrl": ".",
     "target": "esnext",
     "module": "esnext",
@@ -15,6 +16,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "resolveJsonModule": true,
+    "experimentalDecorators": true,
     "lib": [
       "dom",
       "dom.iterable",

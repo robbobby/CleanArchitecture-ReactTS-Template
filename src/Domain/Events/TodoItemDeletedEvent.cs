@@ -1,9 +1,7 @@
 ﻿namespace Console.Domain.Events;
 
-public class TodoItemDeletedEvent : DomainEvent
-{
-    public TodoItemDeletedEvent(TodoItem item)
-    {
+public class TodoItemDeletedEvent : DomainEvent {
+    public TodoItemDeletedEvent(TodoItem item) {
         Item = item;
     }
 

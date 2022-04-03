@@ -3,7 +3,7 @@ using Console.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Console.WebUI.Controllers; 
+namespace Console.WebUI.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
@@ -18,7 +18,7 @@ public class AuthController : ControllerBase {
     [ProducesResponseType(typeof(AuthUser), StatusCodes.Status200OK)]
     public async Task<IActionResult> Login([FromBody] Credentials request) {
         await _hubContext.Clients.All.SendAsync("UserLogin");
-        AuthUser authUser = new AuthUser("success", "38595847A485DJSHND94857", request?.userName ?? "");
+        AuthUser authUser = new("success", "38595847A485DJSHND94857", request?.userName ?? "");
         return Ok(authUser);
     }
 

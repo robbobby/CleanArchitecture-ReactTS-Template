@@ -4,12 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Console.Application.TodoLists.Commands.UpdateTodoList;
 
-public class UpdateTodoListCommandValidator : AbstractValidator<UpdateTodoListCommand>
-{
+public class UpdateTodoListCommandValidator : AbstractValidator<UpdateTodoListCommand> {
     private readonly IApplicationDbContext _context;
 
-    public UpdateTodoListCommandValidator(IApplicationDbContext context)
-    {
+    public UpdateTodoListCommandValidator(IApplicationDbContext context) {
         _context = context;
 
         RuleFor(v => v.Title)
@@ -18,8 +16,7 @@ public class UpdateTodoListCommandValidator : AbstractValidator<UpdateTodoListCo
             .MustAsync(BeUniqueTitle).WithMessage("The specified title already exists.");
     }
 
-    public async Task<bool> BeUniqueTitle(UpdateTodoListCommand model, string title, CancellationToken cancellationToken)
-    {
+    public async Task<bool> BeUniqueTitle(UpdateTodoListCommand model, string title, CancellationToken cancellationToken) {
         return await _context.TodoLists
             .Where(l => l.Id != model.Id)
             .AllAsync(l => l.Title != title, cancellationToken);

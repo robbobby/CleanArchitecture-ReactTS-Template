@@ -14,7 +14,8 @@ const SIGNALR_CONFIG = {
 
 /**
  * SignalR API abstraction layer communication.
- * Configures/manages hub connections (typescript singleton pattern).
+ * Configures/manages hub connections
+ * typescript singleton pattern
  */
 class SignalRService {
     private static _signalRService: SignalRService;
