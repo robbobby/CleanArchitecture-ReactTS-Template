@@ -2,6 +2,7 @@
 using Console.Application.Common.Behaviours;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Console.Application;

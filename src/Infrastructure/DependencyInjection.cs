@@ -1,5 +1,4 @@
 ﻿using Console.Application.Common.Interfaces;
-using Console.Infrastructure.Files;
 using Console.Infrastructure.Identity;
 using Console.Infrastructure.Persistence;
 using Console.Infrastructure.Services;
@@ -8,19 +7,31 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 
 namespace Console.Infrastructure;
 
 public static class DependencyInjection {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration) {
-        if (configuration.GetValue<bool>("UseInMemoryDatabase"))
+        // if (configuration.GetValue<bool>("UseInMemoryDatabase"))
+            // services.AddDbContext<ApplicationDbContext>(options =>
+                // options.UseInMemoryDatabase("ConsoleDb"));
+        // else {
+
+            ConnectionConfig connConfig = new ConnectionConfig();
+            configuration.GetSection("DevConnection").Bind(connConfig);
+            var cnnString = new NpgsqlConnectionStringBuilder() {
+                Host = connConfig.Host,
+                Port = connConfig.Port,
+                Database = connConfig.Database,
+                Username = connConfig.Username,
+                Password = connConfig.Password
+            };
+
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseInMemoryDatabase("ConsoleDb"));
-        else
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection"),
-                    b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
+                    builder => 
+                        builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
@@ -36,14 +47,22 @@ public static class DependencyInjection {
 
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IIdentityService, IdentityService>();
-        services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
+        services.AddTransient<IDontCare, DontCare>();
 
         services.AddAuthentication()
             .AddIdentityServerJwt();
 
         services.AddAuthorization(options =>
             options.AddPolicy("CanPurge", policy => policy.RequireRole("Administrator")));
-
+        
         return services;
     }
+}
+
+public class ConnectionConfig {
+    public string Host { get; set; }
+    public int Port { get; set; }
+    public string Database { get; set; }
+    public string Username { get; set; }
+    public string Password { get; set; }
 }

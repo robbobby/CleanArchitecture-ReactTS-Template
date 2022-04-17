@@ -2,17 +2,19 @@ using System.Net;
 using Console.Application;
 using Console.Application.Common.Interfaces;
 using Console.Infrastructure;
+using Console.Infrastructure.Extensions;
 using Console.Infrastructure.Persistence;
-using Console.WebUI.Extensions;
 using Console.WebUI.Filters;
 using Console.WebUI.Hubs;
 using Console.WebUI.Models;
 using Console.WebUI.Services;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using NSwag;
 using NSwag.Generation.Processors.Security;
@@ -30,6 +32,7 @@ public class Startup {
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services) {
         services.AddApplication();
+        services.AddInfrastructure(Configuration);
 
         var spaSrcPath = "ClientApp";
         var corsPolicyName = "AllowAll";
@@ -37,17 +40,21 @@ public class Startup {
         services.AddHealthChecks()
             .AddGcInfoCheck("GCInfo");
 
-        // services.AddHealthChecks()
+        services.AddHealthChecks();
         // .AddInMemoryStorage();
 
 
         services.AddCorsConfig(corsPolicyName);
-        services.AddControllers();
+        services.AddControllers(config => {
+            var policy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+            config.Filters.Add(new AuthorizeFilter(policy));
+        });
         services.AddSignalR();
         services.AddMvc(opt => opt.SuppressAsyncSuffixInActionNames = false);
-
-
-        services.AddInfrastructure(Configuration);
+        
+        ConnectionConfig connConfig = new ConnectionConfig();
 
         services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -98,7 +105,7 @@ public class Startup {
             // app.UseResponseCompression();
         }
 
-        app.UseCors("AllowAll");
+        // app.UseCors("AllowAll");
 
         app.UseExceptionHandler(builder => {
             builder.Run(async context => {
@@ -131,6 +138,9 @@ public class Startup {
         app.UseSwaggerUi3(settings => {
             settings.Path = "/api";
             settings.DocumentPath = "/api/specification.json";
+            settings.CustomStylesheetPath = "/SwaggerDark.css";
+            System.Console.WriteLine(settings.CustomStylesheetPath);
+            
         });
 
         app.UseRouting();

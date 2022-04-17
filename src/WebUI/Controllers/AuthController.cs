@@ -1,4 +1,6 @@
-﻿using Console.WebUI.Hubs;
+﻿using Console.Domain.Entities;
+using Console.Infrastructure;
+using Console.WebUI.Hubs;
 using Console.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -9,9 +11,19 @@ namespace Console.WebUI.Controllers;
 [Route("api/[controller]/[action]")]
 public class AuthController : ControllerBase {
     private readonly IHubContext<UsersHub> _hubContext;
+    private readonly ILogger<AuthController> _logger;
+    private readonly IDontCare _dontCare;
 
-    public AuthController(IHubContext<UsersHub> usersHub) {
-        _hubContext = usersHub;
+    public AuthController(IHubContext<UsersHub> hubContext, ILogger<AuthController> logger, IDontCare dontCare) {
+        _hubContext = hubContext;
+        _logger = logger;
+        _dontCare = dontCare;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Login() {
+        await _dontCare.CheckDb();
+        return Ok("Hello world");
     }
 
     [HttpPost]

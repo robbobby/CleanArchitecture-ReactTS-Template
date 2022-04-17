@@ -24,6 +24,7 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
         _currentUserService = currentUserService;
         _domainEventService = domainEventService;
         _dateTime = dateTime;
+        System.Console.WriteLine(options);
     }
 
     public DbSet<TodoList> TodoLists => Set<TodoList>();
@@ -34,12 +35,12 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
         foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
             switch (entry.State) {
                 case EntityState.Added:
-                    entry.Entity.CreatedBy = _currentUserService.UserId;
+                    // entry.Entity.CreatedBy = _currentUserService.UserId;
                     entry.Entity.Created = _dateTime.Now;
                     break;
 
                 case EntityState.Modified:
-                    entry.Entity.LastModifiedBy = _currentUserService.UserId;
+                    // entry.Entity.LastModifiedBy = _currentUserService.UserId;
                     entry.Entity.LastModified = _dateTime.Now;
                     break;
             }
@@ -57,6 +58,11 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
         return result;
     }
 
+    public async Task<bool> CanConnect() {
+        await this.Database.MigrateAsync();
+        return await Database.CanConnectAsync();
+    }
+
     protected override void OnModelCreating(ModelBuilder builder) {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
@@ -66,7 +72,7 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
     private async Task DispatchEvents(DomainEvent[] events) {
         foreach (DomainEvent @event in events) {
             @event.IsPublished = true;
-            await _domainEventService.Publish(@event);
+            // await _domainEventService.Publish(@event);
         }
     }
 }
