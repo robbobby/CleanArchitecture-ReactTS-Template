@@ -2,7 +2,6 @@
 using Console.Infrastructure.Identity;
 using Console.Infrastructure.Persistence;
 using Console.Infrastructure.Services;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +32,8 @@ public static class DependencyInjection {
                     builder => 
                         builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
         services.AddScoped<IDomainEventService, DomainEventService>();
@@ -42,18 +43,16 @@ public static class DependencyInjection {
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
-        services.AddIdentityServer()
-            .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+        // services.AddIdentityServer()
+            // .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
         services.AddTransient<IDateTime, DateTimeService>();
-        services.AddTransient<IIdentityService, IdentityService>();
+        // services.AddTransient<IIdentityService, IdentityService>();
         services.AddTransient<IDontCare, DontCare>();
 
-        services.AddAuthentication()
-            .AddIdentityServerJwt();
 
-        services.AddAuthorization(options =>
-            options.AddPolicy("CanPurge", policy => policy.RequireRole("Administrator")));
+        // services.AddAuthorization(options =>
+            // options.AddPolicy("CanPurge", policy => policy.RequireRole("Administrator")));
         
         return services;
     }

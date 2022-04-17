@@ -36,5 +36,5 @@
       "useSSL": true,
       "sslPort": 5001
     }
-  }
+  },
 }

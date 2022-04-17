@@ -14,16 +14,14 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
-export interface IAuthClient {
-    loginGET(): Observable<FileResponse>;
-    loginPOST(request: Credentials): Observable<AuthUser>;
-    logout(): Observable<void>;
+export interface IWeatherForecastClient {
+    get(): Observable<FileResponse>;
 }
 
 @Injectable({
     providedIn: 'root'
 })
-export class AuthClient implements IAuthClient {
+export class WeatherForecastClient implements IWeatherForecastClient {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -33,8 +31,8 @@ export class AuthClient implements IAuthClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    loginGET() : Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/Auth/Login";
+    get() : Observable<FileResponse> {
+        let url_ = this.baseUrl + "/WeatherForecast";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -46,11 +44,11 @@ export class AuthClient implements IAuthClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processLoginGET(response_);
+            return this.processGet(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processLoginGET(<any>response_);
+                    return this.processGet(<any>response_);
                 } catch (e) {
                     return <Observable<FileResponse>><any>_observableThrow(e);
                 }
@@ -59,7 +57,7 @@ export class AuthClient implements IAuthClient {
         }));
     }
 
-    protected processLoginGET(response: HttpResponseBase): Observable<FileResponse> {
+    protected processGet(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -78,440 +76,6 @@ export class AuthClient implements IAuthClient {
         }
         return _observableOf<FileResponse>(<any>null);
     }
-
-    loginPOST(request: Credentials) : Observable<AuthUser> {
-        let url_ = this.baseUrl + "/api/Auth/Login";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(request);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processLoginPOST(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processLoginPOST(<any>response_);
-                } catch (e) {
-                    return <Observable<AuthUser>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<AuthUser>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processLoginPOST(response: HttpResponseBase): Observable<AuthUser> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AuthUser.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<AuthUser>(<any>null);
-    }
-
-    logout() : Observable<void> {
-        let url_ = this.baseUrl + "/api/Auth/Logout";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processLogout(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processLogout(<any>response_);
-                } catch (e) {
-                    return <Observable<void>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<void>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processLogout(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(<any>null);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(<any>null);
-    }
-}
-
-export interface ISampleDataClient {
-    weatherForecasts(startDateIndex: number | undefined): Observable<WeatherForecast[]>;
-}
-
-@Injectable({
-    providedIn: 'root'
-})
-export class SampleDataClient implements ISampleDataClient {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    weatherForecasts(startDateIndex: number | undefined) : Observable<WeatherForecast[]> {
-        let url_ = this.baseUrl + "/api/SampleData/WeatherForecasts?";
-        if (startDateIndex === null)
-            throw new Error("The parameter 'startDateIndex' cannot be null.");
-        else if (startDateIndex !== undefined)
-            url_ += "startDateIndex=" + encodeURIComponent("" + startDateIndex) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processWeatherForecasts(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processWeatherForecasts(<any>response_);
-                } catch (e) {
-                    return <Observable<WeatherForecast[]>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<WeatherForecast[]>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processWeatherForecasts(response: HttpResponseBase): Observable<WeatherForecast[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(WeatherForecast.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<WeatherForecast[]>(<any>null);
-    }
-}
-
-export interface IWeatherForecastClient {
-    get(): Observable<WeatherForecast2[]>;
-}
-
-@Injectable({
-    providedIn: 'root'
-})
-export class WeatherForecastClient implements IWeatherForecastClient {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    get() : Observable<WeatherForecast2[]> {
-        let url_ = this.baseUrl + "/api/WeatherForecast";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGet(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGet(<any>response_);
-                } catch (e) {
-                    return <Observable<WeatherForecast2[]>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<WeatherForecast2[]>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGet(response: HttpResponseBase): Observable<WeatherForecast2[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(WeatherForecast2.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<WeatherForecast2[]>(<any>null);
-    }
-}
-
-export class AuthUser implements IAuthUser {
-    status?: string;
-    token?: string;
-    userName?: string;
-
-    constructor(data?: IAuthUser) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.status = _data["status"];
-            this.token = _data["token"];
-            this.userName = _data["userName"];
-        }
-    }
-
-    static fromJS(data: any): AuthUser {
-        data = typeof data === 'object' ? data : {};
-        let result = new AuthUser();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["status"] = this.status;
-        data["token"] = this.token;
-        data["userName"] = this.userName;
-        return data; 
-    }
-}
-
-export interface IAuthUser {
-    status?: string;
-    token?: string;
-    userName?: string;
-}
-
-export class Credentials implements ICredentials {
-    userName?: string | undefined;
-    password?: string | undefined;
-    rememberMe?: boolean;
-
-    constructor(data?: ICredentials) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.userName = _data["userName"];
-            this.password = _data["password"];
-            this.rememberMe = _data["rememberMe"];
-        }
-    }
-
-    static fromJS(data: any): Credentials {
-        data = typeof data === 'object' ? data : {};
-        let result = new Credentials();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["userName"] = this.userName;
-        data["password"] = this.password;
-        data["rememberMe"] = this.rememberMe;
-        return data; 
-    }
-}
-
-export interface ICredentials {
-    userName?: string | undefined;
-    password?: string | undefined;
-    rememberMe?: boolean;
-}
-
-export class WeatherForecast implements IWeatherForecast {
-    temperatureC?: number;
-    dateFormatted?: string | undefined;
-    summary?: string | undefined;
-    temperatureF?: number;
-    id?: number;
-
-    constructor(data?: IWeatherForecast) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.temperatureC = _data["temperatureC"];
-            this.dateFormatted = _data["dateFormatted"];
-            this.summary = _data["summary"];
-            this.temperatureF = _data["temperatureF"];
-            this.id = _data["id"];
-        }
-    }
-
-    static fromJS(data: any): WeatherForecast {
-        data = typeof data === 'object' ? data : {};
-        let result = new WeatherForecast();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["temperatureC"] = this.temperatureC;
-        data["dateFormatted"] = this.dateFormatted;
-        data["summary"] = this.summary;
-        data["temperatureF"] = this.temperatureF;
-        data["id"] = this.id;
-        return data; 
-    }
-}
-
-export interface IWeatherForecast {
-    temperatureC?: number;
-    dateFormatted?: string | undefined;
-    summary?: string | undefined;
-    temperatureF?: number;
-    id?: number;
-}
-
-export class WeatherForecast2 implements IWeatherForecast2 {
-    date?: Date;
-    temperatureC?: number;
-    temperatureF?: number;
-    summary?: string | undefined;
-
-    constructor(data?: IWeatherForecast2) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
-            this.temperatureC = _data["temperatureC"];
-            this.temperatureF = _data["temperatureF"];
-            this.summary = _data["summary"];
-        }
-    }
-
-    static fromJS(data: any): WeatherForecast2 {
-        data = typeof data === 'object' ? data : {};
-        let result = new WeatherForecast2();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
-        data["temperatureC"] = this.temperatureC;
-        data["temperatureF"] = this.temperatureF;
-        data["summary"] = this.summary;
-        return data; 
-    }
-}
-
-export interface IWeatherForecast2 {
-    date?: Date;
-    temperatureC?: number;
-    temperatureF?: number;
-    summary?: string | undefined;
 }
 
 export interface FileResponse {

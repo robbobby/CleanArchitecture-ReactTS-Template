@@ -3,6 +3,8 @@
 namespace Console.WebUI.Hubs;
 
 public class UsersHub : Hub<IUsersHub> {
+    public UsersHub() {
+    }
     public async Task UserLogin() {
         await Clients.All.UserLogin();
     }

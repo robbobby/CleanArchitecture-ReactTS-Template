@@ -7,12 +7,12 @@
     "version": "v1"
   },
   "paths": {
-    "/api/Auth/Login": {
+    "/WeatherForecast": {
       "get": {
         "tags": [
-          "Auth"
+          "WeatherForecast"
         ],
-        "operationId": "Auth_LoginGET",
+        "operationId": "WeatherForecast_Get",
         "responses": {
           "200": {
             "description": "",
@@ -25,205 +25,14 @@
               }
             }
           }
-        }
-      },
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "operationId": "Auth_LoginPOST",
-        "requestBody": {
-          "x-name": "request",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Credentials"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
         },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuthUser"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Auth/Logout": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "operationId": "Auth_Logout",
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/SampleData/WeatherForecasts": {
-      "get": {
-        "tags": [
-          "SampleData"
-        ],
-        "operationId": "SampleData_WeatherForecasts",
-        "parameters": [
+        "security": [
           {
-            "name": "startDateIndex",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
+            "JWT": []
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/WeatherForecast": {
-      "get": {
-        "tags": [
-          "WeatherForecast"
-        ],
-        "operationId": "WeatherForecast_Get",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WeatherForecast2"
-                  }
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     }
   },
-  "components": {
-    "schemas": {
-      "AuthUser": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "status": {
-            "type": "string"
-          },
-          "token": {
-            "type": "string"
-          },
-          "userName": {
-            "type": "string"
-          }
-        }
-      },
-      "Credentials": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "userName": {
-            "type": "string",
-            "nullable": true
-          },
-          "password": {
-            "type": "string",
-            "nullable": true
-          },
-          "rememberMe": {
-            "type": "boolean"
-          }
-        }
-      },
-      "WeatherForecast": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "temperatureC": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "dateFormatted": {
-            "type": "string",
-            "nullable": true
-          },
-          "summary": {
-            "type": "string",
-            "nullable": true
-          },
-          "temperatureF": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "WeatherForecast2": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "date": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "temperatureC": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "temperatureF": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "summary": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      }
-    },
-    "securitySchemes": {
-      "JWT": {
-        "type": "apiKey",
-        "description": "Type into the textbox: Bearer {your JWT token}.",
-        "name": "Authorization",
-        "in": "header"
-      }
-    }
-  },
-  "security": [
-    {
-      "JWT": []
-    }
-  ]
+  "components": {}
 }

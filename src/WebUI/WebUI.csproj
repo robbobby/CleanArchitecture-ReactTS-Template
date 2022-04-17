@@ -21,20 +21,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AspNetCore.HealthChecks.UI" Version="6.0.4" />
-        <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.4" />
+        <PackageReference Include="AspNetCore.HealthChecks.UI" Version="6.0.0" />
+        <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.0" />
         <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4" />
-        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.4" />
-        <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.4" />
-        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.4" />
-        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.0" />
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.4">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="NSwag.AspNetCore" Version="13.14.4" />
-        <PackageReference Include="NSwag.MSBuild" Version="13.14.4">
+        <PackageReference Include="NSwag.AspNetCore" Version="13.15.10" />
+        <PackageReference Include="NSwag.MSBuild" Version="13.15.10">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -47,10 +49,6 @@
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
     </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Application\Application.csproj" />
-        <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-    </ItemGroup>
 
     <ItemGroup>
         <_ContentIncludedByDefault Remove="ClientApp\angular.json" />
@@ -66,6 +64,8 @@
         <_ContentIncludedByDefault Remove="Pages\Shared\_LoginPartial.cshtml" />
         <_ContentIncludedByDefault Remove="ClientApp\public\manifest.json" />
     </ItemGroup>
+
+
 
     <PropertyGroup>
         <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
