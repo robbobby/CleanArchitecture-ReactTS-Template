@@ -19,7 +19,7 @@ public static class DependencyInjection {
         // else {
 
             ConnectionConfig connConfig = new ConnectionConfig();
-            configuration.GetSection("DevConnection").Bind(connConfig);
+            configuration.GetSection("DevelopmentConnection").Bind(connConfig);
             var cnnString = new NpgsqlConnectionStringBuilder() {
                 Host = connConfig.Host,
                 Port = connConfig.Port,
@@ -32,6 +32,7 @@ public static class DependencyInjection {
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
                     builder => 
                         builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+            
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 

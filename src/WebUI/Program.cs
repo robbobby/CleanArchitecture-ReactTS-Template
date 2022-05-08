@@ -21,8 +21,8 @@ public class Program {
                 var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-                await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager, roleManager);
-                await ApplicationDbContextSeed.SeedSampleDataAsync(context);
+                // await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager, roleManager);
+                // await ApplicationDbContextSeed.SeedSampleDataAsync(context);
             } catch (Exception ex) {
                 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 

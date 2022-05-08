@@ -24,7 +24,11 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
         _currentUserService = currentUserService;
         _domainEventService = domainEventService;
         _dateTime = dateTime;
-        System.Console.WriteLine(options);
+        MigrateLatest();
+    }
+
+    private void MigrateLatest() {
+        this.Database.MigrateAsync();
     }
 
     public DbSet<TodoList> TodoLists => Set<TodoList>();
