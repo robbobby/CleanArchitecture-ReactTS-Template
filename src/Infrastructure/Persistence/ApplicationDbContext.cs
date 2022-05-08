@@ -24,11 +24,11 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
         _currentUserService = currentUserService;
         _domainEventService = domainEventService;
         _dateTime = dateTime;
-        MigrateLatest();
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
 
-    private void MigrateLatest() {
-        this.Database.MigrateAsync();
+    public async Task MigrateLatest() {
+        await this.Database.MigrateAsync();
     }
 
     public DbSet<TodoList> TodoLists => Set<TodoList>();

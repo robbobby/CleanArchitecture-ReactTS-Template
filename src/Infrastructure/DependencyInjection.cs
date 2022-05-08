@@ -13,11 +13,6 @@ namespace Console.Infrastructure;
 
 public static class DependencyInjection {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration) {
-        // if (configuration.GetValue<bool>("UseInMemoryDatabase"))
-            // services.AddDbContext<ApplicationDbContext>(options =>
-                // options.UseInMemoryDatabase("ConsoleDb"));
-        // else {
-
             ConnectionConfig connConfig = new ConnectionConfig();
             configuration.GetSection("DevelopmentConnection").Bind(connConfig);
             var cnnString = new NpgsqlConnectionStringBuilder() {
@@ -32,7 +27,6 @@ public static class DependencyInjection {
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
                     builder => 
                         builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-            
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 

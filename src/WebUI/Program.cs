@@ -13,16 +13,7 @@ public class Program {
             IServiceProvider services = scope.ServiceProvider;
 
             try {
-                ApplicationDbContext context = services.GetRequiredService<ApplicationDbContext>();
-
-                if (context.Database.IsSqlServer())
-                    context.Database.Migrate();
-
-                var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-
-                // await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager, roleManager);
-                // await ApplicationDbContextSeed.SeedSampleDataAsync(context);
+                await MigrateDbAndSeed(services);
             } catch (Exception ex) {
                 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
@@ -38,5 +29,16 @@ public class Program {
         return Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =>
                 webBuilder.UseStartup<Startup>());
+    }
+
+    private static async Task MigrateDbAndSeed(IServiceProvider services) {
+        ApplicationDbContext dbContext = services.GetRequiredService<ApplicationDbContext>();
+
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+        await dbContext.MigrateLatest();
+        await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager, roleManager);
+        await ApplicationDbContextSeed.SeedSampleDataAsync(dbContext);
     }
 }
